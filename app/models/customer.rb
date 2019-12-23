@@ -21,6 +21,9 @@ class Customer < ActiveRecord::Base
   # => Enum
   enum gender: [:male, :female]
 
+  # => Table
+  self.table_name = "customer"
+
 end
 
 ##########################################################
