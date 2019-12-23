@@ -40,7 +40,7 @@ class CreateCustomers < ActiveRecord::Migration::Current
       t.string     :wrist_circumference
       t.string     :chest_bust_circumference
       t.string     :waist_circumference
-      t.string     :lower_wasite
+      t.string     :lower_waist
       t.string     :hips_seat
 
       # => Timestamps

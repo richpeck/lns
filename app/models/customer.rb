@@ -15,7 +15,7 @@
 ##########################################################
 
 ## Customer ##
-## id | shop_id | name | email | phone | address1 | address2 | city | province | country | created_at | updated_at ##
+## id | customer_id | customer_name | gender | height | weight | shoulder_width | sleeve_length | bicep_circumference | wrist_circumference | chest_bust_circumference | wasit_circumference | lower_waist | hips_seat | created_at | updated_at ##
 class Customer < ActiveRecord::Base
 
   # => Enum
@@ -23,6 +23,9 @@ class Customer < ActiveRecord::Base
 
   # => Table
   self.table_name = "customer"
+
+  # => Attr
+  alias_attribute :name, :customer_name
 
 end
 
