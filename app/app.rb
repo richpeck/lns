@@ -190,15 +190,12 @@ class App < Sinatra::Base
 
   # => Customer
   # => Gives us ability to manage customer information
-  route :get, :post, '/' do
+  route :get, :post, '/(:customer_id)' do
 
     # => GET
     # => Get information about user
     if request.get?
-
-      # => Params
-      @customer = Customer.find_by(customer_id: params[:id]) if params.try(:[], :id)
-
+      @customer = Customer.find_by(customer_id: params[:customer_id]) if params.try(:[], :customer_id)
     end
 
     # => POST
