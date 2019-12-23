@@ -11,8 +11,18 @@
 ###########################################
 
 # => Sources
+# => Multiple sources now deprecated (unless a block is provided -- see RailsAssets below)
 source 'https://rubygems.org'
-source 'https://rails-assets.org'
+
+###########################################
+###########################################
+
+# => [RailsAssets]
+# => Requires block to ensure gems pulled from this directly
+source 'https://rails-assets.org' do
+  gem 'rails-assets-jquery'     # => JQuery
+  gem 'rails-assets-datatables' # => Datatables
+end
 
 ###########################################
 ###########################################
@@ -90,11 +100,6 @@ gem 'padrino-helpers', '~> 0.14.4' # => Sinatra framework which adds a number of
 gem 'haml', '~> 5.1', '>= 5.1.2'                  # => HAML
 gem 'titleize', '~> 1.4', '>= 1.4.1'              # => Titleize (for order line items)
 gem 'humanize', '~> 2.1', '>= 2.1.1'              # => Humanize (allows us to translate numbers to words)
-
-# => Assets
-# => JQuery etc
-gem 'rails-assets-jquery' # => JQuery
-gem 'rails-assets-datatables' # => Datatables
 
 ###########################################
 ###########################################

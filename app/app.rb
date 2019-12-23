@@ -16,7 +16,7 @@
 
 ## Definitions ##
 ## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'customs_new.lns-nyc.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
 DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
 ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
 
