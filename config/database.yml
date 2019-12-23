@@ -13,5 +13,5 @@ production:
 
 test:
   adapter: sqlite3
-  database: "db/test.sqlite3"
+  database: db/test.sqlite3
   pool: 8

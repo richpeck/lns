@@ -100,7 +100,7 @@ class App < Sinatra::Base
   # => Allows us to precompile assets as you would in Rails
   # => https://github.com/kalasjocke/sinatra-asset-pipeline#customization
   set :assets_prefix, '/dist' # => Needed to access assets in frontend
-  set :assets_public_path, File.join(public_folder, "dist") # => Needed to tell Sprockets where to put assets
+  set :assets_public_path, File.join(public_folder, assets_prefix.strip) # => Needed to tell Sprockets where to put assets
   set :assets_css_compressor, :sass # => Required to minimize SASS
   set :assets_js_compressor, :uglifier # => Required to minimize JS
   set :assets_precompile, %w[javascripts/app.js stylesheets/app.sass *.png *.jpg *.gif *.svg] # *.png *.jpg *.svg *.eot *.ttf *.woff *.woff2
@@ -138,14 +138,6 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
-  # => Shopify
-  # => Set the scope that your app needs, read more here:
-  # => http://docs.shopify.com/api/tutorials/oauth
-  set :scope, 'read_products, read_orders'
-
-  ##########################################################
-  ##########################################################
-
   ## CORS ##
   ## Only allow requests from domain ##
   set :allow_origin,   URI::HTTPS.build(host: DOMAIN).to_s
@@ -169,7 +161,7 @@ class App < Sinatra::Base
   # => App
   # => This is a simple example that fetches some products
   # => From Shopify and displays them inside your app
-  get '/' do
+  get '/test' do
 
     @customers = Customer.all
     haml :index
