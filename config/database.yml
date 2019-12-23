@@ -4,9 +4,6 @@ development:
   database: db/development.sqlite3
   pool: 5
 
-staging:
-  url: <%= ENV.fetch('DATABASE_URL') %>
-
 production:
   adapter:  mysql2
   host:     <%= ENV.fetch('DB_HOST') %>
