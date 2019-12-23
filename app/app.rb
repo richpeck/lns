@@ -158,13 +158,25 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
-  # => App
-  # => This is a simple example that fetches some products
-  # => From Shopify and displays them inside your app
-  get '/' do
+  # => Customer
+  # => Gives us ability to manage customer information
+  route :get, :post, '/:customer_id' do
 
+    # => Required Params
+    # => Ensures we're able to only accept inbound requests with certain parameters
+    required_params :customer_id if request.accept.map{ |item| item.to_s }.include?("application/json") # => Only if JSON request
+
+    # => Data
+    # => Populate data for view/JSON response
+    @customer  = Customer.find params[:customer_id]
     @customers = Customer.all
-    haml :index
+
+    # => Response
+    # => This can be HTML or JSON
+    respond_to do |format|
+      format.js   { json @customer.to_json }
+      format.html { haml :index }
+    end
 
   end ## get
 

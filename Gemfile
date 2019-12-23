@@ -24,7 +24,6 @@ source 'https://rails-assets.org' do
   gem 'rails-assets-datatables' # => Datatables
 end
 
-
 ###########################################
 ###########################################
 
@@ -37,11 +36,11 @@ ruby [RUBY_VERSION, '2.6.5'].max
 
 # => Sinatra
 # => Not big enough for Rails
-gem 'sinatra', '~> 2.0', '>= 2.0.7',                                               require: ['sinatra/base', 'sinatra/namespace'] # => Not needed but allows us to call /namespace
-gem 'sinatra-activerecord', '~> 2.0', '>= 2.0.14',                                 require: 'sinatra/activerecord'                # => Integrates ActiveRecord into Sinatra apps (I changed for AR6+)
-gem 'sinatra-asset-pipeline', '~> 2.2', github: 'richpeck/sinatra-asset-pipeline', require: 'sinatra/asset_pipeline'              # => Asset Pipeline (for CSS/JS) (I changed lib/asset-pipeline/task.rb#14 to use ::Sinatra:Manifest)
-gem 'sinatra-contrib', '~> 2.0', '>= 2.0.7',                                       require: 'sinatra/contrib'                     # => Allows us to add "contrib" library to Sinatra app (respond_with) -> http://sinatrarb.com/contrib/
-gem 'sinatra-cors', '~> 1.1',                                                      require: 'sinatra/cors'                        # => Protect app via CORS
+gem 'sinatra', '~> 2.0', '>= 2.0.7',                                               require: ['sinatra/base', 'sinatra/namespace', 'sinatra/json'] # => Not needed but allows us to call /namespace
+gem 'sinatra-activerecord', '~> 2.0', '>= 2.0.14',                                 require: 'sinatra/activerecord'                                # => Integrates ActiveRecord into Sinatra apps (I changed for AR6+)
+gem 'sinatra-asset-pipeline', '~> 2.2', github: 'richpeck/sinatra-asset-pipeline', require: 'sinatra/asset_pipeline'                              # => Asset Pipeline (for CSS/JS) (I changed lib/asset-pipeline/task.rb#14 to use ::Sinatra:Manifest)
+gem 'sinatra-contrib', '~> 2.0', '>= 2.0.7',                                       require: 'sinatra/contrib'                                     # => Allows us to add "contrib" library to Sinatra app (respond_with) -> http://sinatrarb.com/contrib/
+gem 'sinatra-cors', '~> 1.1',                                                      require: 'sinatra/cors'                                        # => Protect app via CORS
 
 # => Database
 # => Allows us to determine exactly which db we're using
