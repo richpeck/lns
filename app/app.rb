@@ -161,7 +161,7 @@ class App < Sinatra::Base
   # => App
   # => This is a simple example that fetches some products
   # => From Shopify and displays them inside your app
-  get '/test' do
+  get '/' do
 
     @customers = Customer.all
     haml :index
