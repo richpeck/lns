@@ -152,14 +152,14 @@ class App < Sinatra::Base
 
   ##########################################################
   ##########################################################
-  ##                   ___                                ##
-  ##                  / _ \                               ##
-  ##                 / /_\ \_ __  _ __                    ##
-  ##                 |  _  | '_ \| '_ \                   ##
-  ##                 | | | | |_) | |_) |                  ##
-  ##                 \_| |_/ .__/| .__/                   ##
-  ##                       | |   | |                      ##
-  ##                       |_|   |_|                      ##
+  ##           _   _      _                               ##
+  ##          | | | |    | |                              ##
+  ##          | |_| | ___| |_ __   ___ _ __ ___           ##
+  ##          |  _  |/ _ \ | '_ \ / _ \ '__/ __|          ##
+  ##          | | | |  __/ | |_) |  __/ |  \__ \          ##
+  ##          \_| |_/\___|_| .__/ \___|_|  |___/          ##
+  ##                     | |                              ##
+  ##                     |_|                              ##
   ##########################################################
   ##########################################################
 
@@ -169,6 +169,9 @@ class App < Sinatra::Base
 
     # => Metafields
     # => Sends request to metafields (updates automatically)
+    def metafields
+
+    end
 
   end
 
@@ -209,7 +212,7 @@ class App < Sinatra::Base
         waist_circumference:      params.try(:[], :waist_circumference),
         lower_waist:              params.try(:[], :lower_waist),
         hips_seat:                params.try(:[], :hips_seat)
-    }).find_or_create_by({id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+    }).find_or_create_by({customer_id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
     # => POST
     # => Allows us to perform things with data
@@ -231,7 +234,7 @@ class App < Sinatra::Base
           waist_circumference:      params.try(:[], :waist_circumference),
           lower_waist:              params.try(:[], :lower_waist),
           hips_seat:                params.try(:[], :hips_seat)
-      }).find_or_create_by({id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+      }).find_or_create_by({customer_id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
     end
 
