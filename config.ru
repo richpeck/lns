@@ -10,4 +10,4 @@ end
 
 ## Sinatra ##
 require_relative 'app/app'
-App.run!
+run App
