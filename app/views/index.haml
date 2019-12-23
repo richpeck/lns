@@ -1,0 +1,25 @@
+- # Introduction (number of orders etc)
+.intro
+  %h4= pluralize(@orders.size, "Managed Order")
+
+- # Table
+- if @orders.any?
+  %table{id: "orders", width: "100%"}
+    %thead
+      %tr
+        %th 📋 Order
+        %th 📦 Product(s)
+        %th ✔️ Status
+        %th ⭐ Created At
+        %th ⏱️ Updated At
+    %tbody
+      - @orders.each do |order|
+        %tr
+          %td= link_to order.number, order.admin_url, target: :_parent
+          %td
+            - order.line_items.each do |line_item|
+              %p= line_item.try(:image)
+              %p= link_to line_item.title, line_item.url, target: :_parent
+          %td= "Fulfilled"
+          %td= order.created_at
+          %td= order.updated_at
