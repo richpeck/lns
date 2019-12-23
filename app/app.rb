@@ -133,6 +133,11 @@ class App < Sinatra::Base
       sprockets.append_path File.join(root, '..', 'vendor', 'assets', folder)
     end
 
+    # => Shopify
+    # => Allows us to connect to the Shopify API via the gem
+    ShopifyAPI::Base.site        = "https://#{ENV.fetch('SHOPIFY_API_KEY')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
+    ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
+
   end
 
   ##########################################################
@@ -144,6 +149,28 @@ class App < Sinatra::Base
   set :allow_methods,  "GET,POST,PUT,DELETE"
   set :allow_headers,  "accept,content-type,if-modified-since"
   set :expose_headers, "location,link"
+
+  ##########################################################
+  ##########################################################
+  ##                   ___                                ##
+  ##                  / _ \                               ##
+  ##                 / /_\ \_ __  _ __                    ##
+  ##                 |  _  | '_ \| '_ \                   ##
+  ##                 | | | | |_) | |_) |                  ##
+  ##                 \_| |_/ .__/| .__/                   ##
+  ##                       | |   | |                      ##
+  ##                       |_|   |_|                      ##
+  ##########################################################
+  ##########################################################
+
+  # => Helpers
+  # => Allows us to call methods inside our routes/endpoints
+  helpers do
+
+    # => Metafields
+    # => Sends request to metafields (updates automatically)
+
+  end
 
   ##########################################################
   ##########################################################

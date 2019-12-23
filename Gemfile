@@ -73,8 +73,7 @@ end
 ####################
 
 # => General
-# => Included by Sinatra-Shopify-App
-gem 'pwinty', '~> 3.0', '>= 3.0.2'          # => Pwinty API Wrapper
+gem 'shopify_api', '~> 8.1'                 # => Shopify API wrapper (used for metafields)
 gem 'rake'                                  # => Allows for Rake usage
 gem 'rack-flash3', require: 'rack-flash'    # => Flash messages for Rack apps
 
