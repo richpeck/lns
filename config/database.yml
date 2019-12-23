@@ -1,11 +1,11 @@
 
 development:
-adapter: sqlite3
-database: db/development.sqlite3
-pool: 5
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
 
 staging:
-url: <%= ENV.fetch('DATABASE_URL') %>
+  url: <%= ENV.fetch('DATABASE_URL') %>
 
 production:
   adapter:  mysql2
@@ -15,6 +15,6 @@ production:
   password: <%= ENV.fetch('DB_PASS') %>
 
 test:
-adapter: sqlite3
-database: "db/test.sqlite3"
-pool: 8
+  adapter: sqlite3
+  database: "db/test.sqlite3"
+  pool: 8

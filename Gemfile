@@ -18,7 +18,7 @@ source 'https://rubygems.org'
 ###########################################
 
 # => [RailsAssets]
-# => Requires block to ensure gems pulled from this directly
+# => Requires source block to ensure gems pulled from this directly
 source 'https://rails-assets.org' do
   gem 'rails-assets-jquery'     # => JQuery
   gem 'rails-assets-datatables' # => Datatables
