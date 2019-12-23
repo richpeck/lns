@@ -16,7 +16,7 @@
 
 ## Definitions ##
 ## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'customs.lns-nyc.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DOMAIN      = ENV.fetch('DOMAIN', 'customs_new.lns-nyc.com') ## used for CORS and other funtionality -- ENV var gives flexibility
 DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
 ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
 
@@ -176,59 +176,7 @@ class App < Sinatra::Base
 
   end ## get
 
-  ##########################################################
-  ##########################################################
 
-  private
-
-  # => Post Install/Uninstall
-  # => This method gets called when your app is installed.
-  # => setup any webhooks or services you need on Shopify
-  # => inside here.
-  def after_shopify_auth
-    shopify_session do |shop_name| # => Shopify hook
-
-    ##################################################
-    ##################################################
-
-      ############################################################
-      ## //////////////// Uninstall Webhook /////////////////// ##
-      ############################################################
-      ## Used to remove the shop/store after removal in Shopify ##
-      ############################################################
-
-      # => Allows us to remove the app from the db when it's installed from shopify
-      begin
-        uninstall_webhook = ShopifyAPI::Webhook.create(
-          topic: 'app/uninstalled',
-          address: "#{base_url}/webhook/uninstall",
-          format: 'json'
-        )
-      rescue => e
-        raise unless uninstall_webhook.persisted?
-      end
-
-      ############################################################
-      ## /////////////////// Order Webhook //////////////////// ##
-      ############################################################
-      ##   Gets order info any time one is placed in Shopify    ##
-      ############################################################
-
-      begin
-        order_webhook = ShopifyAPI::Webhook.create(
-          topic: 'orders/create',
-          address: "#{base_url}/webhook/order",
-          format: 'json'
-        )
-      rescue => e
-        raise unless order_webhook.persisted?
-      end
-
-    ##################################################
-    ##################################################
-
-    end ## session
-  end ## auth
 end ## app.rb
 
 ##########################################################
