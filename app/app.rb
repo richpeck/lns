@@ -158,29 +158,37 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
-  # => General
-  # => This can be expanded later, but for now should just show "nothing to see"
-  get '/' do
-
-    # => Response
-    respond_to do |format|
-      format.html { haml :index }
-    end
-
-  end
-
   # => Customer
   # => Gives us ability to manage customer information
-  route :get, :post, '/:customer_id' do
+  route :get, :post, '/' do
 
     # => Required Params
     # => Ensures we're able to only accept inbound requests with certain parameters
     required_params :customer_id if request.accept.map{ |item| item.to_s }.include?("application/json") # => Only if JSON request
 
-    # => Data
-    # => Populate data for view/JSON response
-    @customer  = Customer.find_by id: params[:customer_id] # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
-    @customers = Customer.all
+    # => POST
+    # => Allows us to perform things with data
+    if request.post?
+
+      # => POST = the user has sent data to the service
+      # => Allows us to change/manage the @customer object
+      @customer = Customer.create_with({
+          customer_name:            params.try(:[], :customer_name),
+          gender:                   params.try(:[], :gender),
+          height:                   params.try(:[], :height),
+          weight:                   params.try(:[], :weight),
+          neck:                     params.try(:[], :neck),
+          shoulder_width:           params.try(:[], :shoulder_width),
+          sleeve_length:            params.try(:[], :sleeve_length),
+          bicep_circumference:      params.try(:[], :bicep_circumference),
+          wrist_circumference:      params.try(:[], :wrist_circumference),
+          chest_bust_circumference: params.try(:[], :chest_bust_circumference),
+          waist_circumference:      params.try(:[], :waist_circumference),
+          lower_waist:              params.try(:[], :lower_waist),
+          hips_seat:                params.try(:[], :hips_seat)
+      }).find_or_create_by({id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+
+    end
 
     # => Response
     # => This can be HTML or JSON

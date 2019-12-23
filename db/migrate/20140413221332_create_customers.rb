@@ -34,6 +34,7 @@ class CreateCustomers < ActiveRecord::Migration::Current
       t.integer    :gender
       t.string     :height
       t.integer    :weight
+      t.string     :neck
       t.string     :shoulder_width
       t.string     :sleeve_length
       t.string     :bicep_circumference

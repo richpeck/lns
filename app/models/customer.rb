@@ -15,7 +15,7 @@
 ##########################################################
 
 ## Customer ##
-## id | customer_id | customer_name | gender | height | weight | shoulder_width | sleeve_length | bicep_circumference | wrist_circumference | chest_bust_circumference | wasit_circumference | lower_waist | hips_seat | created_at | updated_at ##
+## id | customer_id | customer_name | gender | height | weight | neck | shoulder_width | sleeve_length | bicep_circumference | wrist_circumference | chest_bust_circumference | wasit_circumference | lower_waist | hips_seat | created_at | updated_at ##
 class Customer < ActiveRecord::Base
 
   # => Enum
