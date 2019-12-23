@@ -135,7 +135,7 @@ class App < Sinatra::Base
 
     # => Shopify
     # => Allows us to connect to the Shopify API via the gem
-    ShopifyAPI::Base.site        = "https://#{ENV.fetch('SHOPIFY_API_KEY')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
+    ShopifyAPI::Base.site        = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
   end
