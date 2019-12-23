@@ -24,6 +24,7 @@ source 'https://rails-assets.org' do
   gem 'rails-assets-datatables' # => Datatables
 end
 
+
 ###########################################
 ###########################################
 
