@@ -158,6 +158,17 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
+  # => General
+  # => This can be expanded later, but for now should just show "nothing to see"
+  get '/' do
+
+    # => Response
+    respond_to do |format|
+      format.html { haml :index }
+    end
+
+  end
+
   # => Customer
   # => Gives us ability to manage customer information
   route :get, :post, '/:customer_id' do
@@ -168,7 +179,7 @@ class App < Sinatra::Base
 
     # => Data
     # => Populate data for view/JSON response
-    @customer  = Customer.find params[:customer_id]
+    @customer  = Customer.find_by id: params[:customer_id] # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
     @customers = Customer.all
 
     # => Response
