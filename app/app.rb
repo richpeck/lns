@@ -148,6 +148,11 @@ class App < Sinatra::Base
     ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
+    # => Webhook
+    # => Creates a webhook using the ShopifyAPI
+    # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
+    puts ShopifyAPI::Webhook.all
+
   end
 
   ##########################################################
@@ -184,11 +189,6 @@ class App < Sinatra::Base
     # => Get information about user
     if request.get?
       @customer = Customer.find_by(customer_id: params[:customer_id]) if params.try(:[], :customer_id)
-
-      # => Webhook
-      # => Creates a webhook using the ShopifyAPI
-      # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
-      puts ShopifyAPI::Webhook.all
     end
 
     ##############################
