@@ -142,6 +142,7 @@ class App < Sinatra::Base
     # => Webhook
     # => Allows us to receive customer update information
     ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
+    ShopifyAPI::Webhook.create(topic: 'customers/delete', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
 
   end
 
@@ -198,19 +199,31 @@ class App < Sinatra::Base
 
   # => Webhook
   # => This is used when customers are created (allows us to keep data relatively straightforward)
-  post '/webhook/customer' do
+  route :post, :delete '/webhook/customer' do
 
     # => Verify
     request.body.rewind
     data = request.body.read
     verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
 
+    # => JSON
+    # => Translate into ruby format
     params = JSON.parse(data)
-    puts params[:id]
 
-    # => Only needs to capture customer_id (params[:id])
-    # => We store this because we can
-    Customer.find_or_create_by customer_id: params["id"]
+    # => Request
+    # => Used to determine whether to create or destroy item
+    request.post?
+
+      # => Only needs to capture customer_id (params[:id])
+      # => We store this because we can
+      Customer.find_or_create_by(customer_id: params["id"])
+
+    elseif request.delete?
+
+      # => Remove
+      Customer.find_by(customer_id: params[:id]).destroy
+
+    end
 
   end
 
