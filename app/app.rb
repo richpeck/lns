@@ -239,6 +239,9 @@ class App < Sinatra::Base
       # => https://stackoverflow.com/a/35451188/1143732
       updated = ActiveSupport::HashWithIndifferentAccess.new(params.reject{ |key,value| value.blank? })
 
+      puts update
+      puts params
+
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
       @customer = Customer.create_with(updated).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
