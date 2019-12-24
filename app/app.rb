@@ -14,13 +14,6 @@
 ##########################################################################
 ##########################################################################
 
-# => Models
-# => This allows us to load all the models (which are not loaded by default)
-require_all 'app'
-
-##########################################################
-##########################################################
-
 ## Definitions ##
 ## Constants defined here ##
 DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
@@ -39,6 +32,13 @@ require 'bundler/setup'
 # => Pulls in all Gems
 # => Replaces the need for individual gems
 Bundler.require :default, ENVIRONMENT
+
+##########################################################
+##########################################################
+
+# => Models
+# => This allows us to load all the models (which are not loaded by default)
+require_all 'app'
 
 ##########################################################
 ##########################################################
