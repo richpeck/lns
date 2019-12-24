@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'base64'  # => Used for webhook verification
 require 'openssl' # => Used for webhook verification
+require 'active_support/security_utils' # => Used for webhook verification
 
 ## ENV ##
 ## Allows us to define before the App directory ##
