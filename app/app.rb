@@ -311,8 +311,8 @@ class App < Sinatra::Base
         verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
 
         # => Return
-        @params  = JSON.parse(data) # => Return JSON object
-      
+        @params = JSON.parse(data) # => Return JSON object
+
       end
 
       # => Create
@@ -322,7 +322,9 @@ class App < Sinatra::Base
 
       # => Delete
       post '/destroy' do
-        Customer.destroy_by(customer_id: @params["id"])
+        puts @params
+        puts "---TEST---"
+        Customer.find_by(customer_id: @params["id"]).destroy
       end
 
     end #customer
