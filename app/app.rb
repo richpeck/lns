@@ -14,15 +14,6 @@
 ##########################################################################
 ##########################################################################
 
-## Definitions ##
-## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
-DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
-ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
-
-##########################################################
-##########################################################
-
 # => Load
 # => This replaces individual requires with bundled gems
 # => https://stackoverflow.com/a/1712669/1143732
@@ -30,7 +21,7 @@ require 'bundler/setup'
 
 # => Pulls in all Gems
 # => Replaces the need for individual gems
-Bundler.require :default, ENVIRONMENT
+Bundler.require :default, ENV.fetch("RACK_ENV", "development") # => This should be an ENV var but the loading order was messed up
 
 ##########################################################
 ##########################################################
@@ -39,7 +30,14 @@ Bundler.require :default, ENVIRONMENT
 # => This allows us to load all the models (which are not loaded by default)
 require_all 'app'
 
-PARAMS      = Customer.column_names.excluding(:id, :created_at, :updated_at)
+##########################################################
+##########################################################
+
+## Definitions ##
+## Constants defined here ##
+DOMAIN = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DEBUG  = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
+PARAMS = Customer.column_names.excluding(:id, :created_at, :updated_at)
 
 ##########################################################
 ##########################################################
