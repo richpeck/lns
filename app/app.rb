@@ -237,8 +237,9 @@ class App < Sinatra::Base
       # => Updated Params
       # => Compact only works on nil values (not empty strings)
       # => https://stackoverflow.com/a/35451188/1143732
-      updated = params.slice(PARAMS).reject{ |key,value| value.blank? }
+      updated = params.reject{ |key,value| value.blank? }
 
+      puts PARAMS
       puts updated
 
       # => POST = the user has sent data to the service
