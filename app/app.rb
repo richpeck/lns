@@ -39,7 +39,7 @@ Bundler.require :default, ENVIRONMENT
 # => This allows us to load all the models (which are not loaded by default)
 require_all 'app'
 
-PARAMS      = Customer.column_names.except(:id, :created_at, :updated_at)
+PARAMS      = Customer.column_names.excluding(:id, :created_at, :updated_at)
 
 ##########################################################
 ##########################################################
