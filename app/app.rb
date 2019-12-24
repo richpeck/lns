@@ -236,6 +236,7 @@ class App < Sinatra::Base
 
       puts params[:customer_id]
       puts params
+      puts request.body
 
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
