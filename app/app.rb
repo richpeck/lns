@@ -14,15 +14,6 @@
 ##########################################################################
 ##########################################################################
 
-## Definitions ##
-## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
-DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
-ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
-
-##########################################################
-##########################################################
-
 # => Load
 # => This replaces individual requires with bundled gems
 # => https://stackoverflow.com/a/1712669/1143732
@@ -38,6 +29,16 @@ Bundler.require :default, ENVIRONMENT
 # => Models
 # => This allows us to load all the models (which are not loaded by default)
 require_all 'app'
+
+##########################################################
+##########################################################
+
+## Definitions ##
+## Constants defined here ##
+DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
+ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
+PARAMS      = Customer.column_names.except(:id, :created_at, :updated_at)
 
 ##########################################################
 ##########################################################
@@ -135,7 +136,7 @@ class App < Sinatra::Base
 
     # => Shopify
     # => Allows us to connect to the Shopify API via the gem
-    ShopifyAPI::Base.site        = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
+    ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
   end
@@ -149,31 +150,6 @@ class App < Sinatra::Base
   set :allow_methods,  "GET,POST,PUT,DELETE"
   set :allow_headers,  "accept,content-type,if-modified-since"
   set :expose_headers, "location,link"
-
-  ##########################################################
-  ##########################################################
-  ##           _   _      _                               ##
-  ##          | | | |    | |                              ##
-  ##          | |_| | ___| |_ __   ___ _ __ ___           ##
-  ##          |  _  |/ _ \ | '_ \ / _ \ '__/ __|          ##
-  ##          | | | |  __/ | |_) |  __/ |  \__ \          ##
-  ##          \_| |_/\___|_| .__/ \___|_|  |___/          ##
-  ##                     | |                              ##
-  ##                     |_|                              ##
-  ##########################################################
-  ##########################################################
-
-  # => Helpers
-  # => Allows us to call methods inside our routes/endpoints
-  helpers do
-
-    # => Metafields
-    # => Sends request to metafields (updates automatically)
-    def metafields
-
-    end
-
-  end
 
   ##########################################################
   ##########################################################
@@ -198,7 +174,6 @@ class App < Sinatra::Base
     # => GET
     # => Get information about user
     if request.get?
-      puts params
       @customer = Customer.find_by(customer_id: params[:customer_id]) if params.try(:[], :customer_id)
     end
 
@@ -230,6 +205,24 @@ class App < Sinatra::Base
           lower_waist:              params.try(:[], :lower_waist),
           hips_seat:                params.try(:[], :hips_seat)
       }).find_or_create_by({customer_id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+
+      # => Update
+      # => This is called because the above may only "find" the @customer record - we may need to update it
+      # => To update it, we need to add the various new values sent by the user
+      # => Remember, the only parameter we need is the customer_id - so we don't know if the others are valid or not
+      @customer.assign_attributes params.slice(PARAMS).compact! # => https://stackoverflow.com/a/7430444/1143732
+      @customer.update if @customer.changed?
+
+      # => Metafields
+      # => This allows us to create metafields for the customer
+      customer = ShopifyAPI::Customer.find @customer.customer_id
+
+      # => Cycle Params
+      # => Allows us to populate/update metafields based on what the user has added
+      # => Just do everything as string for now
+      params.slice(PARAMS).each do |k,v|
+        customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include? k
+      end
 
     end
 
