@@ -218,7 +218,7 @@ class App < Sinatra::Base
       # => We store this because we can
       Customer.find_or_create_by(customer_id: params["id"])
 
-    elseif request.delete?
+    elsif request.delete?
 
       # => Remove
       Customer.find_by(customer_id: params[:id]).destroy
