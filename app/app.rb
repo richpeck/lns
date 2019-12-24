@@ -212,7 +212,7 @@ class App < Sinatra::Base
 
     # => Request
     # => Used to determine whether to create or destroy item
-    request.post?
+    if request.post?
 
       # => Only needs to capture customer_id (params[:id])
       # => We store this because we can
