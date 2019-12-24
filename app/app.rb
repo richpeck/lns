@@ -16,7 +16,7 @@
 
 ## Definitions ##
 ## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DOMAIN      = ENV.fetch('DOMAIN', 'lockn-stitch-crafted.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
 DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
 ENVIRONMENT = ENV.fetch("RACK_ENV", "development")
 
@@ -148,11 +148,6 @@ class App < Sinatra::Base
     ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
-    # => Webhook
-    # => Creates a webhook using the ShopifyAPI
-    # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
-    puts ShopifyAPI::Webhook.all
-
   end
 
   ##########################################################
@@ -189,6 +184,11 @@ class App < Sinatra::Base
     # => Get information about user
     if request.get?
       @customer = Customer.find_by(customer_id: params[:customer_id]) if params.try(:[], :customer_id)
+
+      # => Webhook
+      # => Creates a webhook using the ShopifyAPI
+      # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
+      puts ShopifyAPI::Webhook.all
     end
 
     ##############################
