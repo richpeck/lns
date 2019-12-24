@@ -322,8 +322,6 @@ class App < Sinatra::Base
 
       # => Delete
       post '/destroy' do
-        puts @params
-        puts "---TEST---"
         Customer.find_by(customer_id: @params["id"]).destroy
       end
 
