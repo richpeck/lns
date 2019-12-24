@@ -238,6 +238,15 @@ class App < Sinatra::Base
 
     # => Delete
     post '/customer/destroy' do
+
+      # => Verify
+      request.body.rewind
+      data = request.body.read
+      verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
+
+      # => JSON
+      # => Translate into ruby format
+      params = JSON.parse(data)
       puts params
 
       Customer.destroy_by(customer_id: params["id"])
