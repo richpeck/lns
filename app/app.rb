@@ -241,21 +241,7 @@ class App < Sinatra::Base
 
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
-      @customer = Customer.create_with({
-          customer_name:            updated.try(:[], :customer_name),
-          gender:                   updated.try(:[], :gender),
-          height:                   updated.try(:[], :height),
-          weight:                   updated.try(:[], :weight),
-          neck:                     updated.try(:[], :neck),
-          shoulder_width:           updated.try(:[], :shoulder_width),
-          sleeve_length:            updated.try(:[], :sleeve_length),
-          bicep_circumference:      updated.try(:[], :bicep_circumference),
-          wrist_circumference:      updated.try(:[], :wrist_circumference),
-          chest_bust_circumference: updated.try(:[], :chest_bust_circumference),
-          waist_circumference:      updated.try(:[], :waist_circumference),
-          lower_waist:              updated.try(:[], :lower_waist),
-          hips_seat:                updated.try(:[], :hips_seat)
-      }).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+      @customer = Customer.create_with(updated.try(:delete,"customer_name")).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
       # => Update
       # => This is called because the above may only "find" the @customer record - we may need to update it
@@ -271,8 +257,8 @@ class App < Sinatra::Base
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
       # => Just do everything as string for now
-      params.slice(PARAMS).compact.each do |k,v|
-        customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include? k
+      updated.each do |k,v|
+        customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include?(k)
       end
 
     end
