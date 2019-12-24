@@ -215,7 +215,7 @@ class App < Sinatra::Base
 
       # => JSON
       # => Translate into ruby format
-      params = JSON.parse(data)
+      @params = JSON.parse(data)
 
     end
 
@@ -231,25 +231,15 @@ class App < Sinatra::Base
 
       # => JSON
       # => Translate into ruby format
-      params = JSON.parse(data)
+      @params = JSON.parse(data)
 
       Customer.create_with({ customer_name: [params["first_name"], params["last_name"]].join(" ") }).find_or_create_by(customer_id: params["id"])
     end
 
     # => Delete
     post '/customer/destroy' do
-
-      # => Verify
-      request.body.rewind
-      data = request.body.read
-      verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
-
-      # => JSON
-      # => Translate into ruby format
-      params = JSON.parse(data)
-      puts params
-
-      Customer.destroy_by(customer_id: params["id"])
+      puts @params
+      Customer.destroy_by(customer_id: @params["id"])
     end
 
     ################################
