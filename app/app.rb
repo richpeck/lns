@@ -14,18 +14,6 @@
 ##########################################################################
 ##########################################################################
 
-# => Load
-# => This replaces individual requires with bundled gems
-# => https://stackoverflow.com/a/1712669/1143732
-require 'bundler/setup'
-
-# => Pulls in all Gems
-# => Replaces the need for individual gems
-Bundler.require :default, ENVIRONMENT
-
-##########################################################
-##########################################################
-
 # => Models
 # => This allows us to load all the models (which are not loaded by default)
 require_all 'app'
@@ -39,6 +27,18 @@ DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and 
 DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
 ENVIRONMENT = ENV.fetch("RACK_ENV", "development") ## allows us to call environemnt
 PARAMS      = Customer.column_names.except(:id, :created_at, :updated_at)
+
+##########################################################
+##########################################################
+
+# => Load
+# => This replaces individual requires with bundled gems
+# => https://stackoverflow.com/a/1712669/1143732
+require 'bundler/setup'
+
+# => Pulls in all Gems
+# => Replaces the need for individual gems
+Bundler.require :default, ENVIRONMENT
 
 ##########################################################
 ##########################################################
