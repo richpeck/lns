@@ -248,8 +248,7 @@ class App < Sinatra::Base
       # => Translate into ruby format
       params = JSON.parse(data)
 
-
-      Customer.find_by(customer_id: params["id"]).destroy
+      Customer.destroy_by(customer_id: params["id"])
     end
 
     ################################
