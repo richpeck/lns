@@ -206,6 +206,7 @@ class App < Sinatra::Base
     verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
 
     puts data
+    puts "test"
 
     # => Only needs to capture customer_id (params[:id])
     # => We store this because we can
