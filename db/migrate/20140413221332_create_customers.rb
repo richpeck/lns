@@ -29,7 +29,7 @@ class CreateCustomers < ActiveRecord::Migration::Current
 
       # => Attributes
       # => These may be added to later
-      t.string     :customer_id
+      t.string     :customer_id, null: false
       t.string     :customer_name
       t.integer    :gender
       t.string     :height
