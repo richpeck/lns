@@ -224,16 +224,7 @@ class App < Sinatra::Base
 
     # => Create
     post '/customer/create' do
-      # => Verify
-      request.body.rewind
-      data = request.body.read
-      verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
-
-      # => JSON
-      # => Translate into ruby format
-      @params = JSON.parse(data)
-
-      Customer.create_with({ customer_name: [params["first_name"], params["last_name"]].join(" ") }).find_or_create_by(customer_id: params["id"])
+      Customer.create_with({ customer_name: [@params["first_name"], @params["last_name"]].join(" ") }).find_or_create_by(customer_id: @params["id"])
     end
 
     # => Delete
