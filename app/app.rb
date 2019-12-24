@@ -139,6 +139,10 @@ class App < Sinatra::Base
     ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com/admin"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
+    # => Webhook
+    # => Allows us to receive customer update information
+    ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
+
   end
 
   ##########################################################
@@ -153,6 +157,34 @@ class App < Sinatra::Base
 
   ##########################################################
   ##########################################################
+  ##           _   _      _                               ##
+  ##          | | | |    | |                              ##
+  ##          | |_| | ___| |_ __   ___ _ __ ___           ##
+  ##          |  _  |/ _ \ | '_ \ / _ \ '__/ __|          ##
+  ##          | | | |  __/ | |_) |  __/ |  \__ \          ##
+  ##          \_| |_/\___|_| .__/ \___|_|  |___/          ##
+  ##                       | |                            ##
+  ##                       |_|                            ##
+  ##########################################################
+  ##########################################################
+
+  # => Helpers
+  # => Allows us to call methods inside our routes/endpoints
+  helpers do
+
+    # Webhooks
+    # https://help.shopify.com/en/api/getting-started/webhooks#creating-an-endpoint-for-webhooks#verifying-webhooks
+    # Compare the computed HMAC digest based on the shared secret and the request contents
+    # to the reported HMAC in the headers
+    def verify_webhook(data, hmac_header)
+      calculated_hmac = Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', SHARED_SECRET, data))
+      ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, hmac_header)
+    end
+
+  end
+
+  ##########################################################
+  ##########################################################
   ##                   ___                                ##
   ##                  / _ \                               ##
   ##                 / /_\ \_ __  _ __                    ##
@@ -161,6 +193,26 @@ class App < Sinatra::Base
   ##                 \_| |_/ .__/| .__/                   ##
   ##                       | |   | |                      ##
   ##                       |_|   |_|                      ##
+  ##########################################################
+  ##########################################################
+
+  # => Webhook
+  # => This is used when customers are created (allows us to keep data relatively straightforward)
+  post '/webhook/customer' do
+
+    # => Verify
+    request.body.rewind
+    data = request.body.read
+    verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
+
+    puts verified
+
+    # => Only needs to capture customer_id (params[:id])
+    # => We store this because we can
+    Customer.find_or_create_by customer_id: verified[:id]
+
+  end
+
   ##########################################################
   ##########################################################
 
@@ -174,12 +226,6 @@ class App < Sinatra::Base
     # => GET
     # => Get information about user
     if request.get?
-
-      ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
-      ShopifyAPI::Webhook.find(:all, params: { address: 'https://custom.lns-nyc.com/webhook/customer' }).each do |test|
-        puts test.inspect()
-      end
-
 
       # => Ensure params[:customer_id] present
       if params.try(:[], :customer_id)
@@ -239,7 +285,7 @@ class App < Sinatra::Base
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
       # => Just do everything as string for now
-      params.slice(PARAMS).each do |k,v|
+      params.slice(PARAMS).compact.each do |k,v|
         customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include? k
       end
 
