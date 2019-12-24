@@ -1,9 +1,12 @@
 ## RubyGems ##
 ## Required for Ubuntu ##
 require 'rubygems'
+
 require 'base64'  # => Used for webhook verification
 require 'openssl' # => Used for webhook verification
 require 'active_support/security_utils' # => Used for webhook verification
+
+require 'active_support/core_ext/hash'  # => Used for hash.except (https://www.reddit.com/r/ruby/comments/5opjqp/most_efficient_way_to_remove_keyvalue_from_a_hash/dcl50bz?utm_source=share&utm_medium=web2x)
 
 ## ENV ##
 ## Allows us to define before the App directory ##
