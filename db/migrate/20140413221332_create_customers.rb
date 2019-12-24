@@ -18,7 +18,7 @@ class CreateCustomers < ActiveRecord::Migration::Current
   ###########################################
 
   # => Decs
-  @@table = :customers
+  @@table = Customer.table_name
 
   ###########################################
   ###########################################

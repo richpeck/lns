@@ -14,6 +14,15 @@
 ##########################################################################
 ##########################################################################
 
+## Definitions ##
+## Constants defined here ##
+DOMAIN      = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
+ENVIRONMENT = ENV.fetch("RACK_ENV", "development")
+
+##########################################################
+##########################################################
+
 # => Load
 # => This replaces individual requires with bundled gems
 # => https://stackoverflow.com/a/1712669/1143732
@@ -21,7 +30,7 @@ require 'bundler/setup'
 
 # => Pulls in all Gems
 # => Replaces the need for individual gems
-Bundler.require :default, ENV.fetch("RACK_ENV", "development") # => This should be an ENV var but the loading order was messed up
+Bundler.require :default, ENVIRONMENT if defined?(Bundler) # => ENVIRONMENT only used here, can do away with constant if necessary
 
 ##########################################################
 ##########################################################
@@ -33,11 +42,12 @@ require_all 'app'
 ##########################################################
 ##########################################################
 
-## Definitions ##
-## Constants defined here ##
-DOMAIN = ENV.fetch('DOMAIN', 'lns-nyc.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
-DEBUG  = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
-PARAMS = Customer.column_names.excluding(:id, :created_at, :updated_at)
+# => Params
+# => This has to be loaded after models (requires Customer class to be invoked)
+# => Gives us standardized array of parameter attributes based on table_name
+if ActiveRecord::Base.connection.table_exists?(Customer.table_name)
+  PARAMS = Customer.column_names.excluding(:id, :created_at, :updated_at) # => if allows us to db:migrate without coming up with table undefined errors
+end
 
 ##########################################################
 ##########################################################
@@ -137,6 +147,11 @@ class App < Sinatra::Base
     # => Allows us to connect to the Shopify API via the gem
     ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
+
+    # => Webhook
+    # => Creates a webhook using the ShopifyAPI
+    # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
+    puts ShopifyAPI::Webhook.all
 
   end
 

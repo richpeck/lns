@@ -59,10 +59,10 @@ gem 'puma' # => web server
 # => Environments
 # => Allows us to load gems depending on the environment
 group :development do
-  gem 'irb'     # => Console
-  gem 'dotenv'  # => ENV vars (local)
-  gem 'foreman' # => Allows us to run the app in development/testing
-  gem 'byebug'  # => Debug tool for Ruby
+  gem 'irb'                            # => Console
+  gem 'dotenv', require: 'dotenv/load' # => ENV vars (local) -- https://github.com/bkeepers/dotenv#sinatra-or-plain-ol-ruby
+  gem 'foreman'                        # => Allows us to run the app in development/testing
+  gem 'byebug'                         # => Debug tool for Ruby
 end
 
 ###########################################
