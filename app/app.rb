@@ -199,7 +199,7 @@ class App < Sinatra::Base
 
   # => Webhook
   # => This is used when customers are created (allows us to keep data relatively straightforward)
-  route :post, :delete '/webhook/customer' do
+  route :post, :delete, '/webhook/customer' do
 
     # => Verify
     request.body.rewind
