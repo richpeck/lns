@@ -257,7 +257,7 @@ class App < Sinatra::Base
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
       # => Just do everything as string for now
-      updated.each do |k,v|
+      updated.delete("customer_id").delete("customer_name").each do |k,v|
         customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include?(k)
       end
 
