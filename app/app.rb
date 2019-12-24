@@ -239,7 +239,7 @@ class App < Sinatra::Base
       # => https://stackoverflow.com/a/35451188/1143732
       updated = ActiveSupport::HashWithIndifferentAccess.new(params.reject{ |key,value| value.blank? })
 
-      puts update
+      puts updated
       puts params
 
       # => POST = the user has sent data to the service
