@@ -234,7 +234,12 @@ class App < Sinatra::Base
       # => Ensures we're able to only accept inbound requests with certain parameters
       required_params :customer_id if request.accept.map{ |item| item.to_s }.include?("application/json") # => Only if JSON request
 
-      puts params.compact
+      # => Updated Params
+      # => Compact only works on nil values (not empty strings)
+      # => https://stackoverflow.com/a/35451188/1143732
+      updated = params.slice(PARAMS).reject{ |key,value| value.blank? }
+
+      puts updated
 
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
