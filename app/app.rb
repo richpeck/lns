@@ -234,6 +234,8 @@ class App < Sinatra::Base
       # => Ensures we're able to only accept inbound requests with certain parameters
       required_params :customer_id if request.accept.map{ |item| item.to_s }.include?("application/json") # => Only if JSON request
 
+      puts params
+
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
       @customer = Customer.create_with({
@@ -252,7 +254,7 @@ class App < Sinatra::Base
           hips_seat:                params.try(:[], :hips_seat)
       }).find_or_create_by({customer_id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
-      puts params.slice(PARAMS)
+      puts params
 
       # => Update
       # => This is called because the above may only "find" the @customer record - we may need to update it
