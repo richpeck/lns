@@ -247,6 +247,7 @@ class App < Sinatra::Base
       # => JSON
       # => Translate into ruby format
       params = JSON.parse(data)
+      puts params
 
       Customer.destroy_by(customer_id: params["id"])
     end
