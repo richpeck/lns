@@ -237,10 +237,7 @@ class App < Sinatra::Base
       # => Updated Params
       # => Compact only works on nil values (not empty strings)
       # => https://stackoverflow.com/a/35451188/1143732
-      updated = params.reject{ |key,value| value.blank? }
-
-      puts PARAMS
-      puts updated
+      updated = ActiveSupport::HashWithIndifferentAccess.new(params.reject{ |key,value| value.blank? })
 
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
@@ -266,7 +263,7 @@ class App < Sinatra::Base
       # => This is called because the above may only "find" the @customer record - we may need to update it
       # => To update it, we need to add the various new values sent by the user
       # => Remember, the only parameter we need is the customer_id - so we don't know if the others are valid or not
-      @customer.assign_attributes params.slice(PARAMS).compact! # => https://stackoverflow.com/a/7430444/1143732
+      @customer.assign_attributes updated # => https://stackoverflow.com/a/7430444/1143732
       @customer.update if @customer.changed?
 
       # => Metafields
