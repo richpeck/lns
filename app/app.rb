@@ -258,14 +258,13 @@ class App < Sinatra::Base
       }).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
       puts updated
-      puts updated.slice(PARAMS)
 
       # => Update
       # => This is called because the above may only "find" the @customer record - we may need to update it
       # => To update it, we need to add the various new values sent by the user
       # => Remember, the only parameter we need is the customer_id - so we don't know if the others are valid or not
       @customer.assign_attributes customer_name: updated[:customer_name] # => https://stackoverflow.com/a/7430444/1143732
-      @customer.update if @customer.changed?
+      @customer.save if @customer.changed?
 
       # => Metafields
       # => This allows us to create metafields for the customer
