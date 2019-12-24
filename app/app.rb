@@ -237,7 +237,7 @@ class App < Sinatra::Base
     end
 
     # => Delete
-    post '/customer/delete' do
+    post '/customer/destroy' do
 
       # => Verify
       request.body.rewind
