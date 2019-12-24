@@ -197,50 +197,6 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
-  # => Webhooks
-  # => Create/Delete users - had to do different routes because webhooks only send POST requests
-  namespace '/webhook' do
-
-    ################################
-    ################################
-
-    # => Before
-    # => Used to create "params" var (after verifying)
-    before do
-
-      # => Verify
-      request.body.rewind
-      data = request.body.read
-      verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
-
-      # => JSON
-      # => Translate into ruby format
-      @params = JSON.parse(data)
-
-    end
-
-    ################################
-    ################################
-
-    # => Create
-    post '/customer/create' do
-      Customer.create_with({ customer_name: [@params["first_name"], @params["last_name"]].join(" ") }).find_or_create_by(customer_id: @params["id"])
-    end
-
-    # => Delete
-    post '/customer/destroy' do
-      puts @params
-      Customer.destroy_by(customer_id: @params["id"])
-    end
-
-    ################################
-    ################################
-
-  end
-
-  ##########################################################
-  ##########################################################
-
   # => Customer
   # => Gives us ability to manage customer information
   route :get, :post, '/?:customer_id?' do
@@ -323,7 +279,58 @@ class App < Sinatra::Base
       format.html { haml :index }
     end
 
-  end ## get
+  end ## app
+
+  ##########################################################
+  ##########################################################
+  ##     _    _      _     _                 _            ##
+  ##    | |  | |    | |   | |               | |           ##
+  ##    | |  | | ___| |__ | |__   ___   ___ | | _____     ##
+  ##    | |/\| |/ _ \ '_ \| '_ \ / _ \ / _ \| |/ / __|    ##
+  ##    \  /\  /  __/ |_) | | | | (_) | (_) |   <\__ \    ##
+  ##     \/  \/ \___|_.__/|_| |_|\___/ \___/|_|\_\___/    ##
+  ##                                                      ##
+  ##########################################################
+  ##########################################################
+
+  # => Webhooks
+  # => Create/Delete users - had to do different routes because webhooks only send POST requests
+  namespace '/webhook' do
+
+    # => Customer
+    # => Gives us simpler way to manage
+    namespace '/customer' do
+
+      # => Before
+      # => Works for both /create + /delete
+      before do
+
+        # => Verify
+        request.body.rewind
+        data     = request.body.read
+        verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
+
+        # => Return
+        @params  = JSON.parse(data) # => Return JSON object
+      
+      end
+
+      # => Create
+      post '/create' do
+        Customer.create_with({ customer_name: [@params["first_name"], @params["last_name"]].join(" ") }).find_or_create_by(customer_id: @params["id"])
+      end
+
+      # => Delete
+      post '/destroy' do
+        Customer.destroy_by(customer_id: @params["id"])
+      end
+
+    end #customer
+
+  end #webhook
+
+##########################################################
+##########################################################
 
 end ## app.rb
 
