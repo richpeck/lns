@@ -15,6 +15,12 @@ require 'sinatra/activerecord/rake'   # => This works but ONLY if you call "bund
 require 'sinatra/asset_pipeline/task' # => Sinatra Asset Pipeline
 require 'rake/testtask'
 
+## ENV ##
+## Allows us to define before the App directory ##
+DOMAIN      = ENV.fetch('DOMAIN', 'lockn-stitch-crafted.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
+DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
+ENVIRONMENT = ENV.fetch("RACK_ENV", "development")
+
 # => App
 require_relative 'app/app'
 

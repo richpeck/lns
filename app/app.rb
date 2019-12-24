@@ -14,15 +14,6 @@
 ##########################################################################
 ##########################################################################
 
-## Definitions ##
-## Constants defined here ##
-DOMAIN      = ENV.fetch('DOMAIN', 'lockn-stitch-crafted.myshopify.com') ## used for CORS and other funtionality -- ENV var gives flexibility
-DEBUG       = ENV.fetch("DEBUG", false) != false ## this needs to be evaluated this way because each ENV variable returns a string ##
-ENVIRONMENT = ENV.fetch("RACK_ENV", "development")
-
-##########################################################
-##########################################################
-
 # => Load
 # => This replaces individual requires with bundled gems
 # => https://stackoverflow.com/a/1712669/1143732
@@ -46,7 +37,7 @@ require_all 'app'
 # => This has to be loaded after models (requires Customer class to be invoked)
 # => Gives us standardized array of parameter attributes based on table_name
 if ActiveRecord::Base.connection.table_exists?(Customer.table_name)
-  PARAMS = Customer.column_names.excluding(:id, :created_at, :updated_at) # => if allows us to db:migrate without coming up with table undefined errors
+  PARAMS = Customer.column_names.excluding("id", "created_at", "updated_at") # => if allows us to db:migrate without coming up with table undefined errors
 end
 
 ##########################################################
@@ -113,7 +104,7 @@ class App < Sinatra::Base
   set :assets_public_path, File.join(public_folder, assets_prefix.strip) # => Needed to tell Sprockets where to put assets
   set :assets_css_compressor, :sass # => Required to minimize SASS
   set :assets_js_compressor, :uglifier # => Required to minimize JS
-  set :assets_precompile, %w[javascripts/app.js stylesheets/app.sass *.png *.jpg *.gif *.svg] # *.png *.jpg *.svg *.eot *.ttf *.woff *.woff2
+  set :assets_precompile, %w[javascripts/app.js stylesheets/app.sass *.png *.jpg *.gif *.svg *.ico] # *.png *.jpg *.svg *.eot *.ttf *.woff *.woff2
   set :precompiled_environments, %i(development test staging production) # => Only precompile in staging & production
 
   # => Register
@@ -147,11 +138,6 @@ class App < Sinatra::Base
     # => Allows us to connect to the Shopify API via the gem
     ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
-
-    # => Webhook
-    # => Creates a webhook using the ShopifyAPI
-    # => This is to allow us to accept inbound customer creation/update requests from Shopfiy
-    puts ShopifyAPI::Webhook.all
 
   end
 
@@ -188,7 +174,20 @@ class App < Sinatra::Base
     # => GET
     # => Get information about user
     if request.get?
-      @customer = Customer.find_by(customer_id: params[:customer_id]) if params.try(:[], :customer_id)
+
+      # => Ensure params[:customer_id] present
+      if params.try(:[], :customer_id)
+
+        # => Favicon
+        # => Keeps sending requests for favicon.ico
+        halt 404 if params[:customer_id] == "favicon.ico"
+
+        # => Get Customer
+        # => Allows us to see exactly what we're getting
+        @customer = Customer.find_by(customer_id: params[:customer_id])
+
+      end
+
     end
 
     ##############################
