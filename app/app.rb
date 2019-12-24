@@ -239,9 +239,6 @@ class App < Sinatra::Base
       # => https://stackoverflow.com/a/35451188/1143732
       updated = ActiveSupport::HashWithIndifferentAccess.new(params.reject{ |key,value| value.blank? })
 
-      puts updated
-      puts params
-
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
       @customer = Customer.create_with(updated).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
@@ -260,7 +257,7 @@ class App < Sinatra::Base
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
       # => Just do everything as string for now
-      updated.except(:customer_id, :customer_name).each do |k,v|
+      updated.except(:customer_id, :customer_name, :gender).each do |k,v|
         customer.add_metafield ShopifyAPI::Metafield.new(namespace: "measurements", key: k, value: v, value_type: "string") if PARAMS.include?(k)
       end
 
