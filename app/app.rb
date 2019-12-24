@@ -190,7 +190,7 @@ class App < Sinatra::Base
 
   # => Customer
   # => Gives us ability to manage customer information
-  route :get, :post, '/?:customer_id' do
+  route :get, :post, '/?:customer_id?' do
 
     ##############################
     ##############################
