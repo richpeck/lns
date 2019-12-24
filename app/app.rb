@@ -233,7 +233,7 @@ class App < Sinatra::Base
       # => Translate into ruby format
       params = JSON.parse(data)
 
-      Customer.create_with({ customer_name: params["first_name"] }).find_or_create_by(customer_id: params["id"])
+      Customer.create_with({ customer_name: [params["first_name"], params["last_name"]].join(" ") }).find_or_create_by(customer_id: params["id"])
     end
 
     # => Delete
