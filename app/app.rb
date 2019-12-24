@@ -241,7 +241,7 @@ class App < Sinatra::Base
 
       # => POST = the user has sent data to the service
       # => Allows us to change/manage the @customer object
-      @customer = Customer.create_with(updated.try(:delete,"customer_name")).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
+      @customer = Customer.create_with(updated).find_or_create_by({customer_id: updated[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
       # => Update
       # => This is called because the above may only "find" the @customer record - we may need to update it
