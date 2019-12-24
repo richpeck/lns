@@ -252,7 +252,7 @@ class App < Sinatra::Base
           hips_seat:                params.try(:[], :hips_seat)
       }).find_or_create_by({customer_id: params[:customer_id]}) # => Doesn't cause error if not found (https://stackoverflow.com/a/9604617/1143732)
 
-      puts params.slice(PARAMS).compact!
+      puts params.slice(PARAMS)
 
       # => Update
       # => This is called because the above may only "find" the @customer record - we may need to update it
