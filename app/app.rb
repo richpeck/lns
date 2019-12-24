@@ -141,8 +141,8 @@ class App < Sinatra::Base
 
     # => Webhook
     # => Allows us to receive customer update information
-    ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
-    ShopifyAPI::Webhook.create(topic: 'customers/delete', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
+    ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer/create")
+    ShopifyAPI::Webhook.create(topic: 'customers/delete', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer/destroy")
 
   end
 
@@ -197,33 +197,43 @@ class App < Sinatra::Base
   ##########################################################
   ##########################################################
 
-  # => Webhook
-  # => This is used when customers are created (allows us to keep data relatively straightforward)
-  route :post, :delete, '/webhook/customer' do
+  # => Webhooks
+  # => Create/Delete users - had to do different routes because webhooks only send POST requests
+  namespace '/webhook' do
 
-    # => Verify
-    request.body.rewind
-    data = request.body.read
-    verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
+    ################################
+    ################################
 
-    # => JSON
-    # => Translate into ruby format
-    params = JSON.parse(data)
+    # => Before
+    # => Used to create "params" var (after verifying)
+    before do
 
-    # => Request
-    # => Used to determine whether to create or destroy item
-    if request.post?
+      # => Verify
+      request.body.rewind
+      data = request.body.read
+      verified = verify_webhook(data, env["HTTP_X_SHOPIFY_HMAC_SHA256"])
 
-      # => Only needs to capture customer_id (params[:id])
-      # => We store this because we can
-      Customer.find_or_create_by(customer_id: params["id"])
-
-    elsif request.delete?
-
-      # => Remove
-      Customer.find_by(customer_id: params[:id]).destroy
+      # => JSON
+      # => Translate into ruby format
+      params = JSON.parse(data)
 
     end
+
+    ################################
+    ################################
+
+    # => Create
+    post '/customer/create' do
+      Customer.create_with({ customer_name: [params["first_name"], params["last_name"]].join(" ") }).find_or_create_by(customer_id: params["id"])
+    end
+
+    # => Delete
+    post '/customer/delete' do
+      Customer.find_by(customer_id: params["id"]).destroy
+    end
+
+    ################################
+    ################################
 
   end
 
