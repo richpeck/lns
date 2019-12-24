@@ -37,7 +37,7 @@ require_all 'app'
 # => This has to be loaded after models (requires Customer class to be invoked)
 # => Gives us standardized array of parameter attributes based on table_name
 if ActiveRecord::Base.connection.table_exists?(Customer.table_name)
-  PARAMS = Customer.column_names.excluding("id", "created_at", "updated_at") # => if allows us to db:migrate without coming up with table undefined errors
+  PARAMS = Customer.column_names.excluding("id", "created_at", "updated_at") unless defined?(PARAMS) # => if allows us to db:migrate without coming up with table undefined errors
 end
 
 ##########################################################
@@ -136,7 +136,7 @@ class App < Sinatra::Base
 
     # => Shopify
     # => Allows us to connect to the Shopify API via the gem
-    ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com"
+    ShopifyAPI::Base.site = "https://#{ENV.fetch('SHOPIFY_API')}:#{ENV.fetch('SHOPIFY_SECRET')}@#{ENV.fetch('SHOPIFY_STORE')}.myshopify.com/admin"
     ShopifyAPI::Base.api_version = ENV.fetch("SHOPIFY_API_VERSION", "2019-10")
 
   end
@@ -174,6 +174,12 @@ class App < Sinatra::Base
     # => GET
     # => Get information about user
     if request.get?
+
+      ShopifyAPI::Webhook.create(topic: 'customers/create', format: 'json', address: "https://custom.lns-nyc.com/webhook/customer")
+      ShopifyAPI::Webhook.find(:all, params: { address: 'https://custom.lns-nyc.com/webhook/customer' }).each do |test|
+        puts test.inspect()
+      end
+
 
       # => Ensure params[:customer_id] present
       if params.try(:[], :customer_id)
