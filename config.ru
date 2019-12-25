@@ -1,6 +1,6 @@
 ## RubyGems ##
 ## Required for Ubuntu ##
-require 'rubygems'
+require 'rubygems' # => Necessary for Ubuntu
 
 require 'base64'  # => Used for webhook verification
 require 'openssl' # => Used for webhook verification
