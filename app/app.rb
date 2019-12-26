@@ -256,8 +256,8 @@ class App < Sinatra::Base
 
       # => Customer Name
       # => Allows us to update the name of the customer in Shopify (does not work for metafields)
-      if customer.name != @customer.customer_name
-        customer.name = @customer.customer_name
+      if customer.first_name != @customer.customer_name
+        customer.first_name = @customer.customer_name
         customer.save
       end
 
