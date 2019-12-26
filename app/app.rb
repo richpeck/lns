@@ -254,12 +254,28 @@ class App < Sinatra::Base
       # => This allows us to create metafields for the customer
       customer = ShopifyAPI::Customer.find @customer.customer_id
 
-      # => Customer Name
+      # => Name
       # => Allows us to update the name of the customer in Shopify (does not work for metafields)
-      if customer.first_name != @customer.customer_name
-        customer.first_name = @customer.customer_name
-        customer.save
+      name = @customer.customer_name.split(" ")
+
+      # => Since input is received as an entire block, we need to split to send to first/last name
+      # => To do this, we split the string and send the first to the first_name attribute, and last to last_name (this allows us to manage the system)
+      # => Not perfect but not important at present
+      i          = false # => Used to indicate if the object has changed
+      first_name = name.first
+      last_name  = name.drop(1).join
+
+      # => Send data to Shopify
+      # => Only save if any have changed
+      %i(first_name last_name).each do |name|
+        if customer.send(name) != local_variable_get(name)
+          customer.send(name) = local_variable_get(name)
+          i = true
+        end
       end
+
+      # => Save changes
+      customer.save if i != false
 
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
