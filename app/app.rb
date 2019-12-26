@@ -263,7 +263,7 @@ class App < Sinatra::Base
       # => Not perfect but not important at present
       i          = false # => Used to indicate if the object has changed
       first_name = name.first
-      last_name  = name.drop(1).join
+      last_name  = name.drop(1).join(" ")
 
       # => Send data to Shopify
       # => Only save if any have changed
