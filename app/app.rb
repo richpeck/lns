@@ -268,8 +268,8 @@ class App < Sinatra::Base
       # => Send data to Shopify
       # => Only save if any have changed
       %i(first_name last_name).each do |name|
-        if customer.send(name) != local_variable_get(name)
-          customer.send(name) = local_variable_get(name)
+        if customer.send(name) != binding.local_variable_get(name)
+          customer.send(name)   = binding.local_variable_get(name)
           i = true
         end
       end
