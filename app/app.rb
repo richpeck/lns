@@ -265,6 +265,7 @@ class App < Sinatra::Base
       first_name = name.first
       last_name  = name.drop(1).join
 
+
       # => Send data to Shopify
       # => Only save if any have changed
       %i(first_name last_name).each do |name|
