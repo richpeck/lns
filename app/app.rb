@@ -254,6 +254,13 @@ class App < Sinatra::Base
       # => This allows us to create metafields for the customer
       customer = ShopifyAPI::Customer.find @customer.customer_id
 
+      # => Customer Name
+      # => Allows us to update the name of the customer in Shopify (does not work for metafields)
+      if customer.name != @customer.customer_name
+        customer.name = @customer.customer_name
+        customer.save
+      end
+
       # => Cycle Params
       # => Allows us to populate/update metafields based on what the user has added
       # => Just do everything as string for now
